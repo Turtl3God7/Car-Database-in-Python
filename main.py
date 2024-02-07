@@ -6,9 +6,15 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 
-# making a clear function to clear the console. Only works on windows
-clear = lambda: os.system('cls')  # on Windows System
-clear()
+# making a clear function to clear the console
+def clear():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+ 
+    # for mac and linux
+    else:
+        _ = system('clear')
 
 db = sqlite3.connect("carDB.sqlite3")
 cursor = db.cursor()
@@ -36,11 +42,11 @@ def intro():
     cursor.execute("SELECT COUNT (*) FROM cars")
     rowcount = cursor.fetchone()[0]
     print("There is ", rowcount, " cars in the database.")
-    print("1. Show all cars")
+    print("1. Pick a car")
     print("2. Add a car")
     print("3. Remove a car")
     print("4. Update a car")
-    print("5. Show a certain car")
+    print("5. Pick a car to continue")
     print("6. Exit")
     userInput = input("What do you choose? Enter number\n")
     switch = 0
@@ -56,7 +62,7 @@ def intro():
             switch = 1
     choice = int(userInput)
     if choice == 1:
-        showAll()
+        showOne()
     elif choice == 2:
         add()
     elif choice == 3:
@@ -64,7 +70,7 @@ def intro():
     elif choice == 4:
         update()
     elif choice == 5:
-        showOne()
+        showAll()
     elif choice == 6:
         clear()
         print("Saving cars and exiting program")
@@ -342,7 +348,9 @@ def showOne():
                 leasing = "No"
             t.add_row([row[0], row[1], row[2], row[3], row[4], leasing])
         print(t)
-        input("Press enter to continue")
+        carpick = input("Is this car correct?")
+        if carpick in yeslist:
+            carlist.append([row[0], row[1], row[2], row[3], row[4], leasing])
     else:
         clear()
         print("There was no results for the brand", sqlData + ".")
